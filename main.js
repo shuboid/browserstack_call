@@ -29,6 +29,9 @@ function startTranscribe() {
         }
         if (window.chatChannel == undefined)
             return;
+        // add function to find answer to question
+
+        populateQuestions(final_transcript);
         console.log("sending data to chat channel " + final_transcript);
         window.messages[rtc.client.clientId + ""+ event.resultIndex] = {text:interim_transcript || final_transcript , clientId: rtc.client.clientId, timestamp: +new Date(), me: true}
         renderChat()
@@ -42,6 +45,10 @@ function startTranscribe() {
     recognition.start();
 }
 
+function populateQuestions(text_message) {
+
+  console.log("Log answers from the KB here");
+}
 
 function signalInit(channel_id) {
     signalClient = Signal("678731aa56674937a8fcc4fabb6c9115")
@@ -61,7 +68,8 @@ function signalInit(channel_id) {
             console.log(account, uid, msg);
             const payload = JSON.parse(msg);
             if (payload.clientId != rtc.client.clientId){
-              window.messages[payload.clientId +""+ payload.resultIndex] = {text:payload.interim_transcript || payload.final_transcript , clientId: payload.clientId, timestamp: payload.timestamp, me: rtc.client.clientId == payload.clientId}
+              var text = payload.interim_transcript || payload.final_transcript ;
+              window.messages[payload.clientId +""+ payload.resultIndex] = {text:text , clientId: payload.clientId, timestamp: payload.timestamp, me: rtc.client.clientId == payload.clientId}
               renderChat()
             }
             //addTranscribe(payload.resultIndex, account, payload.interim_transcript || payload.final_transcript, account === name);
